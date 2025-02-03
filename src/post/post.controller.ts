@@ -1,0 +1,177 @@
+import { Controller, Get, Post, Body,  Param, Delete, UseInterceptors, Put, UploadedFile } from '@nestjs/common';
+import { PostService } from './post.service';
+import { PostDto } from 'src/validators/post.validator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { unlink } from 'fs';
+
+@Controller('posts')
+export class PostController {
+  constructor(private readonly postService: PostService) {}
+
+  @Post()
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/postImage', // Fayllar saqlanadigan joy
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname); // Faylning kengaytmasini olish
+          const fileName = `${uniqueSuffix}${ext}`; // Yangi fayl nomi
+          callback(null, fileName);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          // Faqat rasm fayllarini ruxsat berish
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      
+
+      },
+    })
+  )
+  async create(@Body() createPostDto: PostDto, @UploadedFile() file: Express.Multer.File) {
+    try {
+      // Fayl muvaffaqiyatli yuklangan bo'lsa, fayl nomini olish
+      const image = file ? `/uploads/postImage/${file.filename}` : undefined;
+  
+      // Yangilangan ma'lumotlar
+      const postData = {
+        ...createPostDto,
+        ...(image && { image }), // Agar fayl bor bo'lsa, uni qo'shish
+      };
+  
+      // Postni yaratish
+      const newPost = await this.postService.create(postData);
+  
+      return {
+        message: 'Post created successfully',
+        newPost,
+      };
+    } catch (error) {
+      return {
+        message: 'Error creating post',
+        error: error.message,
+      };
+    }
+  }
+  
+
+  @Get('user/:id')
+  async findByUserId(@Param('id') id: string) {
+    return await this.postService.findByUserId(parseInt(id, 10));
+  }
+
+  @Get()
+  async findAll() {
+    return await this.postService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.postService.findOne(parseInt(id, 10));
+  }
+
+  @Put(':id')
+@UseInterceptors(
+  FileInterceptor('image', {
+    storage: diskStorage({
+      destination: './uploads/postImage', // Fayllar qayerga saqlanishi
+      filename: (req, file, callback) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname); // Faylning kengaytmasini olish
+        const fileName = `${uniqueSuffix}${ext}`; // Yangi fayl nomi
+        callback(null, fileName);
+      },
+    }),
+    fileFilter: (req, file, callback) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        // Faqat rasm fayllarini ruxsat berish
+        return callback(new Error('Only image files are allowed!'), false);
+      }
+      callback(null, true);
+    },
+  }),
+)
+async updateProfile(
+  @Param('id') id: number, // User ID
+  @UploadedFile() file: Express.Multer.File, // Yuklangan fayl
+  @Body() postDto: PostDto, // Yangilangan ma'lumotlar
+) {
+  try {
+    // Eski rasmni tekshirish va o‘chirish
+    const post = await this.postService.findOne(id); // Foydalanuvchi ma'lumotlarini olish
+    if (post.image) {
+      const oldImagePath = `.${post.image}`; // Eski rasmni olish
+      unlink(oldImagePath, (err) => {
+        if (err) {
+          console.error('Eski rasmni o‘chirishda xatolik:', err);
+        } else {
+          console.log('Eski rasm muvaffaqiyatli o‘chirildi');
+        }
+      });
+    }
+
+    // Fayl muvaffaqiyatli yuklangan bo'lsa, fayl nomini olish
+    const profile_image = file ? `/uploads/profile_image/${file.filename}` : undefined;
+    console.log("file Name", file.filename);
+
+    // Yangilangan ma'lumotlar
+    const updatedData = {
+      ...postDto,
+      ...(profile_image && { profile_image }), // Agar fayl bor bo'lsa, uni qo'shish
+    };
+
+
+    // Foydalanuvchi profilini yangilash
+    const updatedProfile = await this.postService.update(id, updatedData);
+    console.log('Uploaded file:', file);
+    // Muvaffaqiyatli yangilashni qaytarish
+    return {
+      message: 'Profile updated successfully',
+      updatedProfile,
+    };
+  } catch (error) {
+    // Xatolik yuzaga kelganda xabar qaytarish
+    return {
+      message: 'Error updating profile',
+      error: error.message,
+    };
+  }
+}
+
+@Delete(':id')
+async delete(@Param('id') id: string) {
+  try {
+    // O‘chiriladigan postni topish
+    const post = await this.postService.findOne(parseInt(id, 10));
+
+    // Agar postda rasm bo‘lsa, uni o‘chirish
+    if (post.image) {
+      const imagePath = `.${post.image}`; // Fayl manzili
+      unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Rasmni o‘chirishda xatolik:', err);
+        } else {
+          console.log('Rasm muvaffaqiyatli o‘chirildi');
+        }
+      });
+    }
+
+    // Postni o‘chirish
+    await this.postService.delete(parseInt(id, 10));
+
+    // Muvaffaqiyatli o‘chirish xabarini qaytarish
+    return { message: 'Post and image deleted successfully' };
+  } catch (error) {
+    // Xatolik yuzaga kelganda xabar qaytarish
+    return {
+      message: 'Error deleting post',
+      error: error.message,
+    };
+  }
+}
+}
