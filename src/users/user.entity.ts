@@ -1,6 +1,9 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { Blocked } from "src/blocked/blocked.entity";
 import { Comment } from "src/comment/comment.entity";
 import { Like } from "src/like/like.entity";
+import { Messages } from "src/messages/messages.entity";
+import { Notification } from "src/notifications/notifications.entity";
 import { Postt } from "src/post/post.entity";
 import { Search } from "src/search/search.entity";
 
@@ -58,4 +61,13 @@ export class User extends Model<User> {
 
   @HasMany(() => Search)
   searches!: Search[];
+
+  @HasMany(() => Messages)
+  messages!: Messages[];
+
+  @HasMany(() => Notification)
+  notifications!: Notification[];
+
+  @HasMany(() => Blocked)
+  blocked!: Blocked[];
 }

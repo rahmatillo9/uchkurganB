@@ -8,6 +8,9 @@ import { Like } from 'src/like/like.entity';
 import { Comment } from 'src/comment/comment.entity';
 import { Postt } from 'src/post/post.entity';
 import { Search } from 'src/search/search.entity';
+import { Messages } from 'src/messages/messages.entity';
+import { Blocked } from 'src/blocked/blocked.entity';
+import { Notification } from 'src/notifications/notifications.entity';
 
 
 
@@ -18,7 +21,7 @@ import { Search } from 'src/search/search.entity';
     }),
     
 
-    SequelizeModule.forFeature([User, Search, Like, Comment, Postt ]),
+    SequelizeModule.forFeature([User, Search, Like, Comment, Postt, Messages, Blocked, Notification ]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

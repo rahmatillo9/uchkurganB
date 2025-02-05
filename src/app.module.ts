@@ -7,6 +7,10 @@ import { CommentModule } from './comment/comment.module';
 import { LikeModule } from './like/like.module';
 import { SearchModule } from './search/search.module';
 import { CategoryModule } from './category/category.module';
+import { MessagesModule } from './messages/messages.module';
+import { BlockedService } from './blocked/blocked.service';
+import { BlockedModule } from './blocked/blocked.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import * as dotenv from "dotenv";
 dotenv.config();
 @Module({
@@ -35,10 +39,18 @@ dotenv.config();
    LikeModule,
    SearchModule,
    CategoryModule,
+   MessagesModule,
+   BlockedModule,
+   NotificationsModule,
+
 
 
 
 
   ],
+  providers: [BlockedService],
 })
 export class AppModule {}
+
+
+  
