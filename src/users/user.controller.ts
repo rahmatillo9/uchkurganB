@@ -61,7 +61,7 @@ export class UsersController {
       },
     }),
     fileFilter: (req, file, callback) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
         // Faqat rasm fayllarini ruxsat berish
         return callback(new Error('Only image files are allowed!'), false);
       }

@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { NotificationService } from "./notifications.service";
 import { CreateNotificationDto } from "src/validators/messegs/notification,validator";
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway(3001, { cors: true })
 export class NotificationGateway {
     @WebSocketServer()
     server: Server;

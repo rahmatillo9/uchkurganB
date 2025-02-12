@@ -20,13 +20,7 @@ export class BlockedService {
         if (existingBlock) {
             throw new ConflictException("Siz bu foydalanuvchini allaqachon bloklagansiz!");
         }
-        const blockedData = {
-            blockerId: dto.blockerId,
-            blockedId: dto.blockedId,
-
-        }
-
-        return await this.blockedModel.create(blockedData as any);
+       return this.blockedModel.create({...dto} as Blocked);
     }
 
     // **2. Foydalanuvchini blokdan chiqarish**

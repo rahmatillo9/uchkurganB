@@ -13,11 +13,11 @@ async function bootstrap() {
 
   // CORS sozlamalari
   app.enableCors({
-    origin: '*',
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-
+  
   const PORT = process.env.PORT || 3000;
   await app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

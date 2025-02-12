@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param } from "@nestjs/common";
+import { Controller, Post, Get, Delete, Param, Patch } from "@nestjs/common";
 import { LikeService } from "./like.service";
 
 @Controller("likes")
@@ -6,11 +6,11 @@ export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
   @Post(":userId/:postId")
-  async create(
+  async toggleLike(
     @Param("userId") userId: string,
     @Param("postId") postId: string
   ) {
-    return this.likeService.create(parseInt(userId), parseInt(postId));
+    return this.likeService.toggleLike(parseInt(userId), parseInt(postId));
   }
 
   @Get()

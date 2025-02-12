@@ -14,20 +14,16 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUsersDto) {
+    // Parolni hash qilish
     const hashPassword = await bcrypt.hash(createUserDto.password, 10);
-
-
-    const userData = {
-      password: hashPassword,
-      fullname: createUserDto.fullname,
-      nickname: createUserDto.nickname,
-      role: createUserDto.role,
-      email: createUserDto.email,
-      profile_image: createUserDto.profile_image,
-    };
-
-    return this.userModel.create(userData as any); 
+  
+    // Yangi foydalanuvchi yaratish
+    return this.userModel.create({
+      ...createUserDto,
+      password: hashPassword, // Hashlangan parolni saqlash
+    } as User);
   }
+  
 
   async validatePassword(plainTextPassword: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(plainTextPassword, hashedPassword); 
@@ -38,7 +34,10 @@ export class UsersService {
     }
 
     async findAll(): Promise<User[]>{
-        return this.userModel.findAll();
+      
+        return this.userModel.findAll({
+          order: [['createdAt', 'DESC']],
+        });
     
       }
 

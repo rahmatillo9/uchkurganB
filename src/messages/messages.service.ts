@@ -71,18 +71,32 @@ export class MessagesService {
             throw new NotFoundException("Xabar topilmadi");
         }
         
-        message.isRead = true;
-        await message.save();
+        await message.update({ isRead: true });
     
-        return { messageId, isRead: true };
+        return { 
+            messageId, 
+            isRead: true, 
+            senderId: message.senderId // ✅ senderId ni qo‘shish
+        };
     }
+    
+    
     
     
 
-    // **4. Xabarni o‘chirish**
-    async deleteMessage(id: number) {
-        const message = await this.getMessageById(id);
+    async deleteMessage(id: number, userId: number) {
+        const message = await this.messageModel.findByPk(id);
+        
+        if (!message) {
+            throw new NotFoundException("Xabar topilmadi");
+        }
+    
+        if (message.senderId !== userId) {
+            throw new ForbiddenException("Siz faqat o‘z xabaringizni o‘chira olasiz!");
+        }
+    
         await message.destroy();
         return { message: "Xabar o‘chirildi" };
     }
+    
 }

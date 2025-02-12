@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Category } from "./category.entity";
 import { CategoryDto } from "src/validators/category.validator";
+import { Postt } from "src/post/post.entity";
 
 
 @Injectable()
@@ -12,20 +13,32 @@ export class CategoryService {
   ) {}
 
   async create(dto: CategoryDto){
-    const categoryData = {
-      name: dto.name,
-      description: dto.description,
-
-    };
-    return this.categoryModel.create(categoryData as any);
+    return this.categoryModel.create({...dto} as Category);
   }
 
   async findAll(): Promise<Category[]> {
-    return this.categoryModel.findAll({ include: { all: true } });
+    return this.categoryModel.findAll({
+       include: [
+        {
+          model: Postt,
+          as: 'posts',
+          attributes: ['user_id', 'category_id', 'title', 'content', 'contact_info', 'image', 'views_count', 'likes_count',  ]
+        }
+
+    ] });
   }
 
   async findOne(id: number): Promise<Category> {
-    const category = await this.categoryModel.findByPk(id, { include: { all: true } });
+    const category = await this.categoryModel.findByPk(id, { 
+      include: [
+        {
+          model: Postt,
+          as: 'posts',
+          attributes: ['user_id', 'category_id', 'title', 'content', 'contact_info', 'image', 'views_count', 'likes_count',  ]
+        }
+
+    ]
+     });
     if (!category) throw new NotFoundException("Category not found");
     return category;
   }

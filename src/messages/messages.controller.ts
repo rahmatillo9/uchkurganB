@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Delete, Patch } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Delete, Patch, Query } from "@nestjs/common";
 import { MessagesService } from "./messages.service";
 import { CreateMessageDto } from "src/validators/messegs/messages.validator";
 import { Messages } from "./messages.entity";
@@ -14,10 +14,14 @@ export class MessagesController {
 
 
 
-    @Get(":userId/:otherUserId")
-    getMessages(@Param("userId") userId: number, @Param("otherUserId") otherUserId: number) {
-        return this.messagesService.getMessages(userId, otherUserId);
+    @Get()
+    async getMessages(
+      @Query('userId') userId: number,
+      @Query('otherUserId') otherUserId: number
+    ) {
+      return this.messagesService.getMessages(userId, otherUserId);
     }
+    
 
     @Get(":id")
     getMessageById(@Param("id") id: number) {
@@ -28,9 +32,10 @@ export class MessagesController {
     async readMessage(@Param("id") id: number) {
       return this.messagesService.markAsRead(id);
     }
-
-    @Delete(":id")
-    deleteMessage(@Param("id") id: number) {
-        return this.messagesService.deleteMessage(id);
+    
+    @Delete(":id/:usID")
+    deleteMessage(@Param("id") id: number, @Param("usID") usId: number) {
+        return this.messagesService.deleteMessage(id, usId);
     }
+    
 }

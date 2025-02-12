@@ -11,11 +11,7 @@ export class SearchService {
   ) {}
 
   async create(dto: SearchDto) {
-    const searchData = {
-      search_query: dto.search_query,
-      user_id: dto.user_id,
-    };
-    return this.searchModel.create(searchData as any);
+    return this.searchModel.create({...dto} as Search)
   }
 
   async findAll(): Promise<Search[]> {

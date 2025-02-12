@@ -11,6 +11,7 @@ import { User } from 'src/users/user.entity';
       SequelizeModule.forFeature([Comment, Postt, User]),
     ],
   providers: [CommentService],
-  controllers: [CommentController]
+  controllers: [CommentController],
+  exports: [CommentService]
 })
 export class CommentModule {}
