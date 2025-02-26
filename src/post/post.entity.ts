@@ -3,6 +3,7 @@ import { Comment } from "src/comment/comment.entity";
 import { Like } from "src/like/like.entity";
 import { User } from "src/users/user.entity";
 import { Category } from "src/category/category.entity";
+import { PostImage } from "src/postImage/postImage.entity";
 
 @Table({
   tableName: "post",
@@ -72,6 +73,9 @@ export class Postt extends Model<Postt> {
 
   @HasMany(() => Like)
   likes!: Like[];
+
+  @HasMany(() => PostImage)
+images!: PostImage[];
 }
 
 

@@ -7,10 +7,11 @@ import { User } from 'src/users/user.entity';
 import { Comment } from 'src/comment/comment.entity';
 import { Category } from 'src/category/category.entity';
 import { Postt } from './post.entity';
+import { PostImage } from 'src/postImage/postImage.entity';
 
 @Module({
         imports: [
-          SequelizeModule.forFeature([Postt, Like, User, Comment, Category ]),
+          SequelizeModule.forFeature([Postt, Like, User, Comment, Category, PostImage ]),
         ],
   providers: [PostService],
   controllers: [PostController]

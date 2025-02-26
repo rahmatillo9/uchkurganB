@@ -5,6 +5,7 @@ import { PostDto } from 'src/validators/post.validator';
 import { User } from 'src/users/user.entity';
 import { Comment } from 'src/comment/comment.entity';
 import { Like } from 'src/like/like.entity';
+import { PostImage } from 'src/postImage/postImage.entity';
 
 @Injectable()
 export class PostService {
@@ -24,6 +25,12 @@ export class PostService {
           model: User,
           as: 'user',
           attributes: ['id','nickname', 'profile_image'],
+        },
+
+        {
+          model: PostImage,
+          as: 'images',
+          attributes: ['id', "post_id", "image"],
         },
 
         {

@@ -9,7 +9,8 @@ import { JwtAuthGuard } from 'src/authguard/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
 import { extname } from 'path';
 import { unlink } from 'fs';
-
+import sharp from 'sharp';
+import { promises as fs } from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -49,26 +50,40 @@ export class UsersController {
 
   @Throttle({ default: { limit: 20, ttl: 60 } })
   @Put(':id')
-@UseInterceptors(
-  FileInterceptor('profile_image', {
-    storage: diskStorage({
-      destination: './uploads/profile_image', // Fayllar qayerga saqlanishi
-      filename: (req, file, callback) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = extname(file.originalname); // Faylning kengaytmasini olish
-        const fileName = `${uniqueSuffix}${ext}`; // Yangi fayl nomi
-        callback(null, fileName);
+  @UseInterceptors(
+    FileInterceptor('profile_image', {
+      storage: diskStorage({
+        destination: './uploads/profile_image',
+        filename: async (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname).toLowerCase();
+          let fileName = `${uniqueSuffix}${ext}`;
+  
+          // HEIC yoki HEIF formatlarini avtomatik WEBP ga aylantirish
+          if (ext === '.heic' || ext === '.heif') {
+            fileName = `${uniqueSuffix}.webp`; // Yangi nom
+            const outputPath = `./uploads/postImage/${fileName}`;
+  
+            // Faylni vaqtincha saqlash va WebP ga o'zgartirish
+            await sharp(file.path)
+              .toFormat('webp')
+              .toFile(outputPath);
+  
+            // Asl faylni o‘chirish
+            await fs.unlink(file.path);
+          }
+  
+          callback(null, fileName);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp|heic|heif)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
       },
     }),
-    fileFilter: (req, file, callback) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-        // Faqat rasm fayllarini ruxsat berish
-        return callback(new Error('Only image files are allowed!'), false);
-      }
-      callback(null, true);
-    },
-  }),
-)
+  )
 async updateProfile(
   @Param('id') id: number, // User ID
   @UploadedFile() file: Express.Multer.File, // Yuklangan fayl

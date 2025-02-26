@@ -12,6 +12,7 @@ import { BlockedService } from './blocked/blocked.service';
 import { BlockedModule } from './blocked/blocked.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import * as dotenv from "dotenv";
+import { PostImageModule } from './postImage/post-image.module';
 dotenv.config();
 @Module({
   imports: [
@@ -42,7 +43,7 @@ dotenv.config();
    MessagesModule,
    BlockedModule,
    NotificationsModule,
-
+   PostImageModule
 
 
 
