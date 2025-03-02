@@ -12,9 +12,9 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginDto: loginDto) {
-    const { nickname, password } = loginDto;
+    const { username, password } = loginDto;
 
-    const user = await this.usersService.findBynickname(nickname);
+    const user = await this.usersService.findBynickname(username);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -24,7 +24,7 @@ export class AuthController {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { id: user.id, nickname: user.nickname, role: user.role };
+    const payload = { id: user.id, nickname: user.username, role: user.role };
     const token = this.jwtService.sign(payload);
 
     return { access_token: token };

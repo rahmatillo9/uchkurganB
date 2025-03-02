@@ -4,12 +4,11 @@ import { NotificationController } from './notifications.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Notification } from './notifications.entity';
 import { User } from 'src/users/user.entity';
-import { Messages } from 'src/messages/messages.entity';
 import { NotificationGateway } from './notifications.gateway';
 
 
 @Module({
-  imports: [SequelizeModule.forFeature([Notification, User, Messages])],
+  imports: [SequelizeModule.forFeature([Notification, User])],
   providers: [NotificationService, NotificationGateway],
   controllers: [NotificationController]
 })

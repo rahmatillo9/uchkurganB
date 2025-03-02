@@ -1,38 +1,27 @@
-import { Controller, Post, Get, Delete, Param, Patch } from "@nestjs/common";
+
+import { Controller, Post, Get, Body, Param } from "@nestjs/common";
 import { LikeService } from "./like.service";
+import { LikeDto } from "src/validators/like.validator";
 
 @Controller("likes")
 export class LikeController {
-  constructor(private readonly likeService: LikeService) {}
+    constructor(private readonly likeService: LikeService) {}
 
-  @Post(":userId/:postId")
-  async toggleLike(
-    @Param("userId") userId: string,
-    @Param("postId") postId: string
-  ) {
-    return this.likeService.toggleLike(parseInt(userId), parseInt(postId));
-  }
+    // **1. Like qo‘shish yoki olib tashlash**
+    @Post()
+    async toggleLike(@Body() dto: LikeDto) {
+        return await this.likeService.addLike(dto);
+    }
 
-  @Get()
-  async findAll() {
-    return this.likeService.findAll();
-  }
+    // **2. Postdagi like-lar sonini olish**
+    @Get("post/:postId")
+    async getPostLikes(@Param("postId") postId: number) {
+        return await this.likeService.getPostLikes(postId);
+    }
 
-  @Get("post/:postId")
-  async findByPost(@Param("postId") postId: string) {
-    return this.likeService.findByPost(parseInt(postId));
-  }
-
-  @Get("user/:userId")
-  async findByUser(@Param("userId") userId: string) {
-    return this.likeService.findByUser(parseInt(userId));
-  }
-
-  @Delete(":userId/:postId")
-  async delete(
-    @Param("userId") userId: string,
-    @Param("postId") postId: string
-  ) {
-    return this.likeService.delete(parseInt(userId), parseInt(postId));
-  }
+    // **3. Foydalanuvchining postga like bosgan-bosmaganini tekshirish**
+    @Get("user/:userId/post/:postId")
+    async hasUserLikedPost(@Param("userId") userId: number, @Param("postId") postId: number) {
+        return await this.likeService.hasUserLikedPost(userId, postId);
+    }
 }

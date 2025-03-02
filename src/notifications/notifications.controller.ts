@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch } from "@nestjs/common";
+import { Controller, Post, Get, Patch, Body, Param } from "@nestjs/common";
 import { NotificationService } from "./notifications.service";
 import { CreateNotificationDto } from "src/validators/messegs/notification,validator";
 
@@ -6,18 +6,21 @@ import { CreateNotificationDto } from "src/validators/messegs/notification,valid
 export class NotificationController {
     constructor(private readonly notificationService: NotificationService) {}
 
+    // **1. Bildirishnoma yaratish**
     @Post()
-    createNotification(@Body() dto: CreateNotificationDto) {
-        return this.notificationService.createNotification(dto);
+    async createNotification(@Body() dto: CreateNotificationDto) {
+        return await this.notificationService.createNotification(dto);
     }
 
-    @Get(":receiverId")
-    getNotifications(@Param("receiverId") receiverId: number) {
-        return this.notificationService.getNotifications(receiverId);
+    // **2. Foydalanuvchi uchun barcha bildirishnomalarni olish**
+    @Get(":user_id")
+    async getNotifications(@Param("user_id") user_id: number) {
+        return await this.notificationService.getNotifications(user_id);
     }
 
-    @Patch(":notificationId")
-    markAsRead(@Param("notificationId") notificationId: number) {
-        return this.notificationService.markAsRead(notificationId);
+    // **3. Bildirishnomani o‘qilgan deb belgilash**
+    @Patch(":id/read")
+    async markAsRead(@Param("id") notificationId: number) {
+        return await this.notificationService.markAsRead(notificationId);
     }
 }

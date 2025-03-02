@@ -29,8 +29,8 @@ export class UsersService {
     return bcrypt.compare(plainTextPassword, hashedPassword); 
   }
 
-    async findBynickname(nickname: string) {
-        return this.userModel.findOne({ where: { nickname } });
+    async findBynickname(username: string) {
+        return this.userModel.findOne({ where: { username } });
     }
 
     async findAll(): Promise<User[]>{

@@ -39,11 +39,11 @@ export class UsersController {
   }
 
   @Throttle({ default: { limit: 20, ttl: 60 } })
-  @Get('nickname/:nickname')
-  async findByNickname(@Param('nickname') nickname: string): Promise<User> {
-    const user = await this.usersService.findBynickname(nickname);
+  @Get('username/:nickname')
+  async findByNickname(@Param('username') username: string): Promise<User> {
+    const user = await this.usersService.findBynickname(username);
     if (!user) {
-      throw new NotFoundException(`User with nickname ${nickname} not found`);
+      throw new NotFoundException(`User with nickname ${username} not found`);
     }
     return user;
   }

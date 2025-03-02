@@ -3,7 +3,7 @@ import { Postt } from "src/post/post.entity";
 import { User } from "src/users/user.entity";
 
 @Table({
-  tableName: "likes", 
+  tableName: "likes1", 
   timestamps: true,
 })
 export class Like extends Model<Like> {
@@ -21,12 +21,7 @@ export class Like extends Model<Like> {
   })
   postId!: number;
 
-  @Column({
-    type: DataType.BOOLEAN,
-    defaultValue: false, 
-    allowNull: true,
-  })
-  isLiked!: boolean;
+
 
   @BelongsTo(() => User, { as: "user" })
   user!: User;

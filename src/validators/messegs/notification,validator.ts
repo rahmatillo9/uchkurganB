@@ -1,16 +1,18 @@
 import { IsBoolean, IsNumber, IsString } from "class-validator";
 
-
 export class CreateNotificationDto {
-   @IsNumber()
-   userId: number;
+    @IsNumber()
+    user_id: number;
 
     @IsNumber()
-    messageId: number;
+    from_user_id: number;
 
     @IsString()
-    messageText: number;
+    type: string;
+
+    @IsNumber()
+    post_id?: number;
 
     @IsBoolean()
-    isRead: boolean;
+    is_read: boolean;
 }

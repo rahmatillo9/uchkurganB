@@ -8,38 +8,40 @@ export enum Role {
 export class CreateUsersDto {
   @IsString()
   @IsNotEmpty()
-  fullname: string;
+  username: string;
 
   @IsString()
   @IsNotEmpty()
-  nickname: string;
+  email : string;
 
   @IsEnum(Role)
   @IsNotEmpty()
   role: Role; // Enum turini belgilash
 
-  @IsEmail()
-  email: string;
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  password : string;
 
   @IsString()
+  
   profile_image: string;
 
   
   @IsString()
-  @MinLength(6)
-  password: string;
+  bio : string;
 }
 
 export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  fullname?: string;
+  username?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  nickname?: string;
+  email?: string;
 
   @IsOptional()
   @IsEnum(Role)
@@ -47,7 +49,7 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsEmail()
-  email?: string;
+  password?: string;
 
 
 
@@ -57,7 +59,6 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(6) // Minimal uzunlik
-  password?: string;
+  bio ?: string;
 
 }

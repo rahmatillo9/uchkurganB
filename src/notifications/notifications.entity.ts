@@ -1,6 +1,6 @@
 import { Model, Column, Table, ForeignKey, BelongsTo, Default, AllowNull } from "sequelize-typescript";
 import { User } from "src/users/user.entity";
-import { Messages } from "src/messages/messages.entity";
+import { Postt } from "src/post/post.entity";
 
 @Table({
     tableName: "notifications",
@@ -10,23 +10,30 @@ import { Messages } from "src/messages/messages.entity";
 export class Notification extends Model<Notification> {
     @ForeignKey(() => User)
     @Column
-    userId: number; // Kimga bildirishnoma kelyapti
+    user_id: number; // Kimga bildirishnoma kelgan
 
-    @ForeignKey(() => Messages)
-    @AllowNull(true) // Ba'zi bildirishnomalar xabarga bog‘liq bo‘lmasligi mumkin
+    @ForeignKey(() => User)
     @Column
-    messageId?: number; // Qaysi xabar uchun bildirishnoma (ixtiyoriy)
+    from_user_id: number; // Kim yuborgan
 
+    @AllowNull(false)
     @Column
-    messageText: string; // Bildirishnoma matni (oldindan saqlab qo'yish uchun)
+    type: string; // Bildirishnoma turi (like, comment, follow)
+
+    @ForeignKey(() => Postt)
+    @Column
+    post_id?: number; // Agar postga bog‘liq bo‘lsa
 
     @Default(false)
     @Column
-    isRead: boolean; // O‘qilgan yoki yo‘qligini tekshirish uchun
+    is_read: boolean; // O‘qilgan yoki yo‘qligini tekshirish uchun
 
-    @BelongsTo(() => User, { foreignKey: "userId" })
+    @BelongsTo(() => User, { foreignKey: "user_id" })
     user: User;
 
-    @BelongsTo(() => Messages, { foreignKey: "messageId" })
-    message: Messages;
+    @BelongsTo(() => User, { foreignKey: "from_user_id" })
+    fromUser: User;
+
+    @BelongsTo(() => Postt, { foreignKey: "post_id" })
+    post?: Postt;
 }

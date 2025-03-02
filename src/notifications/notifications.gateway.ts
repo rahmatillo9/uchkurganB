@@ -16,10 +16,8 @@ export class NotificationGateway {
         const notification = await this.notificationService.createNotification(dto);
 
         // Foydalanuvchiga real-time xabar yuborish
-        this.server.to(`user-${dto.userId}`).emit("newNotification", notification);
+        this.server.to(`user-${dto.user_id}`).emit("newNotification", notification);
 
         return notification;
-
-        
     }
 }

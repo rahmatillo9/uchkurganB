@@ -2,7 +2,6 @@ import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Blocked } from "src/blocked/blocked.entity";
 import { Comment } from "src/comment/comment.entity";
 import { Like } from "src/like/like.entity";
-import { Messages } from "src/messages/messages.entity";
 import { Notification } from "src/notifications/notifications.entity";
 import { Postt } from "src/post/post.entity";
 import { Search } from "src/search/search.entity";
@@ -15,14 +14,16 @@ export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
   })
-  fullname!: string;
+  username!: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
   })
-  nickname!: string;
+  email !: string;
 
   @Column({
     type: DataType.ENUM( 'customer', 'admin'),
@@ -36,7 +37,7 @@ export class User extends Model<User> {
     unique: true,
     allowNull: false,
   })
-  email!: string;
+  password !: string;
 
   @Column({
     type: DataType.STRING,
@@ -46,9 +47,9 @@ export class User extends Model<User> {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  password!: string;
+  bio!: string;
 
   @HasMany(() => Postt)
   posts!: Postt[]; // "Post" emas, "posts"
@@ -62,8 +63,6 @@ export class User extends Model<User> {
   @HasMany(() => Search)
   searches!: Search[];
 
-  @HasMany(() => Messages)
-  messages!: Messages[];
 
   @HasMany(() => Notification)
   notifications!: Notification[];
