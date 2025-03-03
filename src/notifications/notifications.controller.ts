@@ -1,7 +1,14 @@
-import { Controller, Post, Get, Patch, Body, Param } from "@nestjs/common";
+import { Controller, Post, Get, Patch, Body, Param, UseGuards } from "@nestjs/common";
 import { NotificationService } from "./notifications.service";
 import { CreateNotificationDto } from "src/validators/messegs/notification,validator";
+import { JwtAuthGuard } from "src/authguard/jwt-auth.guard";
+import { Role } from "src/validators/users.validator";
+import { RolesGuard } from "src/validators/RolesGuard/Roluse.guard";
+import { Roles } from "src/validators/RolesGuard/Roles";
 
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.Customer)
 @Controller("notifications")
 export class NotificationController {
     constructor(private readonly notificationService: NotificationService) {}

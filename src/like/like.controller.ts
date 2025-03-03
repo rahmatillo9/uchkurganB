@@ -1,13 +1,22 @@
 
-import { Controller, Post, Get, Body, Param } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, UseGuards } from "@nestjs/common";
 import { LikeService } from "./like.service";
 import { LikeDto } from "src/validators/like.validator";
+
+
+import { JwtAuthGuard } from "src/authguard/jwt-auth.guard";
+import { Role } from "src/validators/users.validator";
+import { RolesGuard } from "src/validators/RolesGuard/Roluse.guard";
+import { Roles } from "src/validators/RolesGuard/Roles";
+
+
 
 @Controller("likes")
 export class LikeController {
     constructor(private readonly likeService: LikeService) {}
 
-    // **1. Like qo‘shish yoki olib tashlash**
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin, Role.Customer)
     @Post()
     async toggleLike(@Body() dto: LikeDto) {
         return await this.likeService.addLike(dto);
@@ -19,7 +28,8 @@ export class LikeController {
         return await this.likeService.getPostLikes(postId);
     }
 
-    // **3. Foydalanuvchining postga like bosgan-bosmaganini tekshirish**
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin, Role.Customer)
     @Get("user/:userId/post/:postId")
     async hasUserLikedPost(@Param("userId") userId: number, @Param("postId") postId: number) {
         return await this.likeService.hasUserLikedPost(userId, postId);

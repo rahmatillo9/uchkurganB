@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Param, Body, Put, Delete, NotFoundException, UploadedFile, Req, UseInterceptors, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUsersDto, UpdateUserDto } from 'src/validators/users.validator';
+import { CreateUsersDto, Role, UpdateUserDto } from 'src/validators/users.validator';
 import { User } from './user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -11,6 +11,8 @@ import { extname } from 'path';
 import { unlink } from 'fs';
 import sharp from 'sharp';
 import { promises as fs } from 'fs';
+import { Roles } from 'src/validators/RolesGuard/Roles';
+import { RolesGuard } from 'src/validators/RolesGuard/Roluse.guard';
 
 @Controller('users')
 export class UsersController {
@@ -22,12 +24,15 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  // Get all users
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Customer)
   @Throttle({ default: { limit: 20, ttl: 60 } })
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
@@ -38,6 +43,8 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Customer)
   @Throttle({ default: { limit: 20, ttl: 60 } })
   @Get('username/:nickname')
   async findByNickname(@Param('username') username: string): Promise<User> {
@@ -48,6 +55,8 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.Customer)
   @Throttle({ default: { limit: 20, ttl: 60 } })
   @Put(':id')
   @UseInterceptors(
@@ -131,7 +140,8 @@ async updateProfile(
 }
   
 
-  // Delete a user by ID
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.Customer)
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     const user = await this.usersService.findOne(id);

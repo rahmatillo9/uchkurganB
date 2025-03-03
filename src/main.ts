@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-
+import rateLimit from 'express-rate-limit';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -10,6 +10,15 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads',
   });
+
+  app.use(
+    rateLimit({
+      windowMs: 60 * 1000, // 1 daqiqa
+      max: 33, // 1 daqiqada 10 ta so‘rovdan oshsa, bloklanadi
+      message: "Ko‘p so‘rov yubordingiz, iltimos biroz kuting.",
+    }),
+  );
+
 
   // CORS sozlamalari
   app.enableCors({
@@ -19,8 +28,8 @@ async function bootstrap() {
   });
   
   const PORT = process.env.PORT || 3000;
-  await app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  await app.listen(PORT, "192.168.1.35", () => {
+    console.log(`Server is running on http://192.168.1.35:${PORT}`);
   });
 }
 bootstrap();

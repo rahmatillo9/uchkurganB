@@ -2,7 +2,7 @@ import { Column, DataType, ForeignKey, Model, Table, BelongsTo } from "sequelize
 import { Postt } from "src/post/post.entity";
 
 @Table({
-  tableName: "post_images1",
+  tableName: "post_images",
   timestamps: true,
 })
 export class PostImage extends Model<PostImage> {
@@ -10,6 +10,7 @@ export class PostImage extends Model<PostImage> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   post_id!: number;
 

@@ -3,7 +3,7 @@ import { Postt } from "src/post/post.entity";
 import { User } from "src/users/user.entity";
 
 @Table({
-  tableName: "likes1", 
+  tableName: "likes", 
   timestamps: true,
 })
 export class Like extends Model<Like> {
@@ -18,6 +18,7 @@ export class Like extends Model<Like> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   postId!: number;
 

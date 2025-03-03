@@ -7,7 +7,8 @@ import {
   Delete, 
   Put, 
   UseInterceptors, 
-  UploadedFile 
+  UploadedFile, 
+  UseGuards
 } from "@nestjs/common";
 import { PostImageService } from "./post-image.service";
 import { CreatePostImageDto } from "src/validators/post-image.dto";
@@ -15,11 +16,20 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname } from "path";
 import { existsSync, unlink } from "fs";
+import { JwtAuthGuard } from "src/authguard/jwt-auth.guard";
+import { RolesGuard } from "src/validators/RolesGuard/Roluse.guard";
+import { Role } from "src/validators/users.validator";
+import { Roles } from "src/validators/RolesGuard/Roles";
+
+
 
 @Controller("post-images")
 export class PostImageController {
   constructor(private readonly postImageService: PostImageService) {}
 
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.Customer)
   @Post()
 @UseInterceptors(
   FileInterceptor('image', {
@@ -84,6 +94,9 @@ async findAll() {
 }
 
 
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.Customer)
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -145,6 +158,9 @@ async findAll() {
     }
   }
   
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.Admin, Role.Customer)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     try {

@@ -18,6 +18,7 @@ export class Comment extends Model<Comment> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   post_id!: number;
 

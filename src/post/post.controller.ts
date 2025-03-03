@@ -1,12 +1,19 @@
-import { Controller, Post, Get, Delete, Body, Param } from "@nestjs/common";
+import { Controller, Post, Get, Delete, Body, Param, UseGuards } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { PostDto } from "src/validators/post.validator";
+import { JwtAuthGuard } from "src/authguard/jwt-auth.guard";
+import { RolesGuard } from "src/validators/RolesGuard/Roluse.guard";
+import { Roles } from "src/validators/RolesGuard/Roles";
+import { Role } from "src/validators/users.validator";
+
+
 
 @Controller("posts")
 export class PostController {
     constructor(private readonly postService: PostService) {}
 
-    // **1. Post yaratish**
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin, Role.Customer)
     @Post()
     async createPost(@Body() dto: PostDto) {
         return await this.postService.createPost(dto);
@@ -30,7 +37,8 @@ export class PostController {
         return await this.postService.getPostById(post_id);
     }
 
-    // **5. Postni o‘chirish**
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin, Role.Customer)
     @Delete(':id')
     async delete(@Param('id') id: string) {
       try {
