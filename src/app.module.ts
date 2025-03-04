@@ -11,6 +11,8 @@ import { BlockedModule } from './blocked/blocked.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import * as dotenv from "dotenv";
 import { PostImageModule } from './postImage/post-image.module';
+import { FollowersModule } from './followers/followers.module';
+import { SavedPostsModule } from './saved_posts/saved_posts.module';
 dotenv.config();
 @Module({
   imports: [
@@ -39,7 +41,9 @@ dotenv.config();
    SearchModule,
    BlockedModule,
    NotificationsModule,
-   PostImageModule
+   PostImageModule,
+   FollowersModule,
+   SavedPostsModule
 
 
 

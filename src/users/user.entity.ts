@@ -1,6 +1,7 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { Blocked } from "src/blocked/blocked.entity";
 import { Comment } from "src/comment/comment.entity";
+import { Follower } from "src/followers/folowers.entity";
 import { Like } from "src/like/like.entity";
 import { Notification } from "src/notifications/notifications.entity";
 import { Postt } from "src/post/post.entity";
@@ -69,4 +70,10 @@ export class User extends Model<User> {
 
   @HasMany(() => Blocked)
   blocked!: Blocked[];
+
+  @HasMany(() => Follower, 'follower_id')
+  followers!: Follower[];
+
+  @HasMany(() => Follower, 'following_id')
+  following!: Follower[];
 }

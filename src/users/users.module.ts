@@ -10,6 +10,8 @@ import { Postt } from 'src/post/post.entity';
 import { Search } from 'src/search/search.entity';
 import { Blocked } from 'src/blocked/blocked.entity';
 import { Notification } from 'src/notifications/notifications.entity';
+import { Follower } from 'src/followers/folowers.entity';
+import { SavedPost } from 'src/saved_posts/saved_posts.entity';
 
 
 
@@ -20,7 +22,7 @@ import { Notification } from 'src/notifications/notifications.entity';
     }),
     
 
-    SequelizeModule.forFeature([User, Search, Like, Comment, Postt,  Blocked, Notification ]),
+    SequelizeModule.forFeature([User, Search, Like, Comment, Postt,  Blocked, Notification, Follower, SavedPost ]),
   ],
   controllers: [UsersController],
   providers: [UsersService],
