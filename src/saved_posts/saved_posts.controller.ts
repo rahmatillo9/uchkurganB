@@ -21,6 +21,11 @@ export class SavedPostsController {
         return this.savedPostsService.findOne(postId);
     }
 
+    @Get("user/:userId/post/:postId")
+    async hasUsersavePost(@Param("userId") user_id: number, @Param("postId") post_id: number) {
+        return await this.savedPostsService.hasUsersavePost(user_id, post_id);
+    }
+
   @Get('user/:userId')
   async getSavedPosts(@Param('userId') userId: number) {
     return this.savedPostsService.getSavedPosts(userId);

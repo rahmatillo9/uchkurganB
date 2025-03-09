@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Body, Param, UseGuards } from "@nestjs/common";
+import { Controller, Post, Get, Delete, Body, Param, UseGuards, Query } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { PostDto } from "src/validators/post.validator";
 import { JwtAuthGuard } from "src/authguard/jwt-auth.guard";
@@ -19,7 +19,22 @@ export class PostController {
         return await this.postService.createPost(dto);
     }
 
-    // **2. Barcha postlarni olish**
+    // In your controller
+@Get('/search')
+async searchPosts(
+    @Query('query') query: string,
+    @Query('page') page: number = 1
+) {
+    return this.postService.searchPosts(query, page);
+}
+
+@Get('random')
+async getRandomPosts(
+    @Query('page') page: number = 1
+) {
+    return this.postService.getRandomPosts(page);
+}
+   
     @Get()
     async getAllPosts() {
         return await this.postService.getAllPosts();

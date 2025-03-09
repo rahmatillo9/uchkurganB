@@ -30,6 +30,15 @@ export class SearchService {
     return search;
   }
 
+
+  async findByUserId(user_id: number): Promise<Search[]> {
+    return this.searchModel.findAll({ 
+      where: { user_id }, 
+      include: { all: true } 
+    });
+  }
+  
+
   async delete(id: number): Promise<void> {
     const search = await this.findOne(id);
     await search.destroy();

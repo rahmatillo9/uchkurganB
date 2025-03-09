@@ -6,59 +6,59 @@ export enum Role {
 }
 
 export class CreateUsersDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: "Foydalanuvchi nomi matn bo‘lishi kerak" })
+  @IsNotEmpty({ message: "Foydalanuvchi nomi bo‘sh bo‘lishi mumkin emas" })
   username: string;
 
-  @IsString()
-  @IsNotEmpty()
-  email : string;
+  @IsString({ message: "Email matn bo‘lishi kerak" })
+  @IsNotEmpty({ message: "Email bo‘sh bo‘lishi mumkin emas" })
+  @IsEmail({}, { message: "Email noto‘g‘ri formatda kiritilgan" })
+  email: string;
 
-  @IsEnum(Role)
-  @IsNotEmpty()
-  role: Role; // Enum turini belgilash
+  @IsEnum(Role, { message: "Rol noto‘g‘ri qiymatda kiritilgan (customer yoki admin bo‘lishi kerak)" })
+  @IsNotEmpty({ message: "Rol bo‘sh bo‘lishi mumkin emas" })
+  role: Role;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  password : string;
+  @IsString({ message: "Parol matn bo‘lishi kerak" })
+  @IsNotEmpty({ message: "Parol bo‘sh bo‘lishi mumkin emas" })
+  @MinLength(6, { message: "Parol kamida 6 ta belgidan iborat bo‘lishi kerak" })
+  password: string;
 
-  @IsString()
-  
-  profile_image: string;
+  @IsOptional()
+  @IsString({ message: "Profil rasmi faqat matn bo‘lishi mumkin" })
+  profile_image?: string;
 
-  
-  @IsString()
-  bio : string;
+  @IsOptional()
+  @IsString({ message: "Bio faqat matn bo‘lishi mumkin" })
+  bio?: string;
 }
 
 export class UpdateUserDto {
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: "Foydalanuvchi nomi matn bo‘lishi kerak" })
+  @IsNotEmpty({ message: "Foydalanuvchi nomi bo‘sh bo‘lishi mumkin emas" })
   username?: string;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: "Email matn bo‘lishi kerak" })
+  @IsNotEmpty({ message: "Email bo‘sh bo‘lishi mumkin emas" })
+  @IsEmail({}, { message: "Email noto‘g‘ri formatda kiritilgan" })
   email?: string;
 
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role; // Enum turini belgilash
+  @IsEnum(Role, { message: "Rol noto‘g‘ri qiymatda kiritilgan (customer yoki admin bo‘lishi kerak)" })
+  role?: Role;
 
   @IsOptional()
-  @IsEmail()
+  @IsString({ message: "Parol matn bo‘lishi kerak" })
+  @MinLength(6, { message: "Parol kamida 6 ta belgidan iborat bo‘lishi kerak" })
   password?: string;
 
-
+  @IsOptional()
+  @IsString({ message: "Profil rasmi faqat matn bo‘lishi mumkin" })
+  profile_image?: string;
 
   @IsOptional()
-  @IsString()
-  profile_image?: string
-
-  @IsOptional()
-  @IsString()
-  bio ?: string;
-
+  @IsString({ message: "Bio faqat matn bo‘lishi mumkin" })
+  bio?: string;
 }

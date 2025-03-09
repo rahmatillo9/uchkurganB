@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Get, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Query, Body } from '@nestjs/common';
 import { FollowersService } from './followers.service';
 import { FollowDto } from 'src/validators/folowers.validator';
 
@@ -6,23 +6,30 @@ import { FollowDto } from 'src/validators/folowers.validator';
 export class FollowersController {
   constructor(private readonly followersService: FollowersService) {}
 
-  @Post('follow')
-  async follow(@Body() followDto: FollowDto) {
-    return this.followersService.followUser(followDto);
+  // ✅ Follow yoki Unfollow qilish (Toggle)
+  @Post('toggle')
+  async toggleFollow(@Body() dto: FollowDto) {
+    return await this.followersService.toggleFollow(dto);
   }
 
-  @Delete('unfollow/:follower_id/:following_id')
-  async unfollow(@Param('follower_id') follower_id: number, @Param('following_id') following_id: number) {
-    return this.followersService.unfollowUser(follower_id, following_id);
+  // ✅ Foydalanuvchining obunachilarini olish
+  @Get()
+  async getFollowers(@Query('userId') userId: number) {
+    return await this.followersService.getFollowers(userId);
   }
 
-  @Get('followers/:userId')
-  async getFollowers(@Param('userId') userId: number) {
-    return this.followersService.getFollowers(userId);
+  // ✅ Foydalanuvchi kimlarni follow qilganini olish
+  @Get('following')
+  async getFollowing(@Query('userId') userId: number) {
+    return await this.followersService.getFollowing(userId);
   }
 
-  @Get('following/:userId')
-  async getFollowing(@Param('userId') userId: number) {
-    return this.followersService.getFollowing(userId);
+  // ✅ Foydalanuvchi kimnidir follow qilgan yoki qilmaganini tekshirish
+  @Get('check')
+  async isFollowing(
+    @Query('follower_id') follower_id: number,
+    @Query('following_id') following_id: number,
+  ) {
+    return await this.followersService.isFollowing(follower_id, following_id);
   }
 }

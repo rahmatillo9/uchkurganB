@@ -28,8 +28,8 @@ export class LikeController {
         return await this.likeService.getPostLikes(postId);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin, Role.Customer)
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles(Role.Admin, Role.Customer)
     @Get("user/:userId/post/:postId")
     async hasUserLikedPost(@Param("userId") userId: number, @Param("postId") postId: number) {
         return await this.likeService.hasUserLikedPost(userId, postId);

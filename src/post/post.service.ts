@@ -8,6 +8,7 @@ import { PostImage } from "src/postImage/postImage.entity";
 import { Like } from "src/like/like.entity"; // Like modelini import qilish
 import { Comment } from "src/comment/comment.entity"; // Comment modelini import qilish
 import { unlink } from "fs";
+import { Op } from "sequelize";
 
 
 const unlinkAsync = promisify(unlink);
@@ -84,6 +85,44 @@ export class PostService {
             throw new Error(`Error deleting post: ${error.message}`);
         }
     }
+
+    // Search posts by title or content
+async searchPosts(query: string, page: number = 1, limit: number = 10) {
+    const offset = (page - 1) * limit;
+    
+    return await this.postModel.findAndCountAll({
+        where: {
+            [Op.or]: [
+                {caption : { [Op.like]: `%${query}%` } },
+                
+            ]
+        },
+        include: ["user", "comments", "likes", "images"],
+        limit,
+        offset,
+        order: [['createdAt', 'DESC']]
+    });
+}
+
+// Get random posts (10 posts per page)
+async getRandomPosts(page: number = 1, limit: number = 10) {
+    const offset = (page - 1) * limit;
+    
+    // First get the total count
+    const totalCount = await this.postModel.count();
+    
+    // Calculate random offset within bounds
+    const maxOffset = Math.max(0, totalCount - limit);
+    const randomOffset = Math.floor(Math.random() * maxOffset);
+     
+     
+    return await this.postModel.findAll({
+        include: ["user", "comments", "likes", "images"],
+        limit,
+        offset: randomOffset,
+        order: [['createdAt', 'DESC']]
+    });
+}
 
     private async deletePostImages(post: Postt, transaction?: any) {
         if (post.images && post.images.length > 0) {

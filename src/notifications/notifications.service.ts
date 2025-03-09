@@ -22,7 +22,11 @@ export class NotificationService {
 
     // **2. Foydalanuvchi uchun barcha bildirishnomalarni olish**
     async getNotifications(user_id: number) {
-        return await this.notificationModel.findAll({ where: { user_id } });
+        return await this.notificationModel.findAll({
+            where: { user_id },
+            include: ["fromUser"],
+            order: [["createdAt", "DESC"]],
+        });
     }
 
     // **3. Bildirishnomani o‘qilgan deb belgilash**
@@ -36,4 +40,23 @@ export class NotificationService {
         await notification.save();
         return { message: "Bildirishnoma o‘qildi" };
     }
+
+    // **4. Foydalanuvchining barcha bildirishnomalarini o‘chirish**
+    async deleteAllNotifications(user_id: number) {
+        await this.notificationModel.destroy({ where: { user_id } });
+        return { message: "Barcha bildirishnomalar o‘chirildi" };
+    }
+
+    // **5. Foydalanuvchining barcha bildirishnomalarini o‘qilgan deb belgilash**
+    async markAllAsRead(user_id: number) {
+        await this.notificationModel.update({ is_read: true }, { where: { user_id } });
+        return { message: "Barcha bildirishnomalar o‘qilgan deb belgilandi" };
+    }
+// **6. Foydalanuvchining o‘qilmagan bildirishnomalarini sonini olish**
+async getUnreadNotificationsCount(user_id: number) {
+    return await this.notificationModel.count({
+        where: { user_id, is_read: false },
+    });
+}
+
 }

@@ -14,7 +14,7 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 60 * 1000, // 1 daqiqa
-      max: 33, // 1 daqiqada 10 ta so‘rovdan oshsa, bloklanadi
+      max: 1000, // 1 daqiqada 10 ta so‘rovdan oshsa, bloklanadi
       message: "Ko‘p so‘rov yubordingiz, iltimos biroz kuting.",
     }),
   );
@@ -22,14 +22,14 @@ async function bootstrap() {
 
   // CORS sozlamalari
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['https://tasvirchi.butcher.uz'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
   
   const PORT = process.env.PORT || 3000;
-  await app.listen(PORT, "192.168.1.35", () => {
-    console.log(`Server is running on http://192.168.1.35:${PORT}`);
+  await app.listen(PORT, () => {
+    console.log(`Server is running on ${PORT}`);
   });
 }
 bootstrap();

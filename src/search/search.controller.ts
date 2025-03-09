@@ -6,17 +6,23 @@ import { SearchDto } from "src/validators/search.validator";
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
-  @Post()
+  @Post("history")
   async create(@Body() searchDto: SearchDto) {
     return await this.searchService.create(searchDto);
   }
 
-  @Get()
+  @Get("history")
   async findAll() {
     return await this.searchService.findAll();
   }
 
-  @Get(":id")
+  
+  @Get("history/:userId")
+  async getAllbyUserId(@Param("userId") userId: string) {
+    return await this.searchService.findByUserId(parseInt(userId, 10));
+  }
+
+  @Get("history/:id")
   async findOne(@Param("id") id: string) {
     return await this.searchService.findOne(parseInt(id, 10));
   }
@@ -26,7 +32,7 @@ export class SearchController {
     return await this.searchService.update(parseInt(id, 10), searchDto);
   }
 
-  @Delete(":id")
+  @Delete("history/:id")
   async delete(@Param("id") id: string) {
     return await this.searchService.delete(parseInt(id, 10));
   }

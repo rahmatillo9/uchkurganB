@@ -21,11 +21,11 @@ export class Follower extends Model<Follower> {
     })
     following_id!: number;
 
-    @BelongsTo(() => User, { as: "follower" })
-    follower!: User;
-
-    @BelongsTo(() => User, { as: "following" })
-    following!: User;
+    @BelongsTo(() => User, 'follower_id')
+    follower: User;
+  
+    @BelongsTo(() => User, 'following_id')
+    following: User;
 
 
 

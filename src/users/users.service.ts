@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './user.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcryptjs';
@@ -14,6 +14,20 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUsersDto) {
+
+
+    const { email, username } = createUserDto;
+
+    // Foydalanuvchini tekshiramiz
+    const existingUser = await this.userModel.findOne({ where: { email } });
+    if (existingUser) {
+      throw new BadRequestException('Bunday email bilan foydalanuvchi allaqachon ro‘yxatdan o‘tgan');
+    }
+
+    const existingUsername = await this.userModel.findOne({ where: { username } });
+    if (existingUsername) {
+      throw new BadRequestException('Bunday foydalanuvchi nomi allaqachon band');
+    }
     // Parolni hash qilish
     const hashPassword = await bcrypt.hash(createUserDto.password, 10);
   

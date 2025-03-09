@@ -10,21 +10,38 @@ export class FollowersService {
     private readonly followerModel: typeof Follower,
   ) {}
 
-  async followUser(dto: FollowDto) {
-    return await this.followerModel.create({...dto} as Follower);
-  }
+  async toggleFollow(dto: FollowDto) {
+    try {
+      const existingFollow = await this.followerModel.findOne({
+        where: { follower_id: dto.follower_id, following_id: dto.following_id },
+      });
 
-  async unfollowUser(follower_id: number, following_id: number) {
-    return await this.followerModel.destroy({
-      where: { follower_id, following_id },
-    });
+      if (existingFollow) {
+        await existingFollow.destroy();
+        return { message: "Obunadan chiqildi", following_id: dto.following_id, follower_id: dto.follower_id };
+      }
+
+      await this.followerModel.create({ follower_id: dto.follower_id, following_id: dto.following_id } as any);
+      return { message: "Obuna bo‘ldi", following_id: dto.following_id, follower_id: dto.follower_id };
+    } catch (error) {
+      throw new Error("Follow/Unfollow qilishda xatolik: " + error.message);
+    }
   }
 
   async getFollowers(userId: number) {
-    return await this.followerModel.findAll({ where: { following_id: userId }, include: ['follower'] });
+    const followers = await this.followerModel.findAll({ where: { following_id: userId }, include: ['follower'] });
+    return { userId, followers };
+  }
+  async getFollowing(userId: number) {
+    const following = await this.followerModel.findAll({
+      where: { follower_id: userId },
+      include: ['following']
+    });
+    return { userId, following };
   }
 
-  async getFollowing(userId: number) {
-    return await this.followerModel.findAll({ where: { follower_id: userId }, include: ['following'] });
+  async isFollowing(follower_id: number, following_id: number) {
+    const follow = await this.followerModel.findOne({ where: { follower_id, following_id } });
+    return { follower_id, following_id, isFollowing: !!follow };
   }
 }

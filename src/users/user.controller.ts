@@ -31,9 +31,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Customer)
-  @Throttle({ default: { limit: 20, ttl: 60 } })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin, Role.Customer)
+  // @Throttle({ default: { limit: 20, ttl: 60 } })
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     const user = await this.usersService.findOne(id);
@@ -43,8 +43,8 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin, Role.Customer)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin, Role.Customer)
   @Throttle({ default: { limit: 20, ttl: 60 } })
   @Get('username/:nickname')
   async findByNickname(@Param('username') username: string): Promise<User> {

@@ -16,12 +16,12 @@ export class AuthController {
 
     const user = await this.usersService.findBynickname(username);
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Parol yoki username hato', HttpStatus.NOT_FOUND);
     }
 
     const isPasswordValid = await this.usersService.validatePassword(password, user.password);
     if (!isPasswordValid) {
-      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Parol yoki username hato', HttpStatus.UNAUTHORIZED);
     }
 
     const payload = { id: user.id, nickname: user.username, role: user.role };

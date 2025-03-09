@@ -5,6 +5,7 @@ export class PostDto {
   user_id: number;
 
   @IsString()
+  @MaxLength(255, { message: "Ma`lumot 255 ta belgidan ko`q bo`lmasligi kerak" })
   caption : string;
 
 
